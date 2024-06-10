@@ -1,19 +1,22 @@
 @include('components.app')
 @include('components.navbar')
 
-<body>
-    <div class="p-4">
-        <h1 class="text-3xl">Популярные игры</h1>
-        <div class="grid grid-cols-4 gap-4 mb-4 place-items-center items-center mt-14">
+<body class="bg-phon">
 
-            @foreach ($games as $game)
-                {{-- @include('components.post_card') --}}
-                @include('components.game_card')
-            @endforeach
+    <div class="container mx-auto">
+        <div class=" border  border-white bg-white  shadow-md shadow-black/5 ">
+            <h1 class="text-orange font-bold text-2xl py-5 px-5">Игры</h1>
+            <div class="grid grid-cols-1 md:grid-cols-5 place-items-center">
+
+                @foreach ($games as $game)
+                    @include('components.game_card')
+                @endforeach
+
+            </div>
         </div>
-
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    </div>
+    @include('components.footer')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 </body>
 
 </html>

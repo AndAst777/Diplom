@@ -15,11 +15,17 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+
+    $messages = [
+     'name.required' => 'Поле имя обязательно для заполнения',
+      'email.required' => 'Поле почта обязательно для заполнения',
+      ];
+
         $validateData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|max:255',
             'password' => 'required|string|min:6|confirmed',
-        ]);
+        ], $messages);
 
         $user = User::create([
             'name' => $validateData['name'],

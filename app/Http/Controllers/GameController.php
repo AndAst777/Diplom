@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Game;
+use App\Models\Platform;
 use Illuminate\Http\Request;
 use PDO;
 
@@ -22,26 +23,34 @@ class GameController extends Controller
         return view('game', compact("game", "games"));
     }
 
+    public function showpostgame(Game $game)
+    {
+        $games = Game::all();
+        return view('post_game', compact("game", "games"));
+    }
+
     public function store(Request $request)
     {
+
+
         $validateData = $request->validate([
             'title' => 'required|string|max:255',
+            'translate' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'platform' => 'required|string|max:255',
+            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-
-        $image = $request->file('image');
-        $imageName = time() . '.' . $image->extension();
-        $image->storeAs('public/images', $imageName);
 
 
         $game = Game::create([
             'title' => $validateData['title'],
+            'translate' => $validateData['translate'],
             'description' => $validateData['description'],
-            'image_path' => 'images/' . $imageName,
+            'platform' => $validateData['platform'],
 
         ]);
-
+        $game->image = $request->file('image')->store('images', 'public');
+        $game->save();
 
         return redirect('admin/games');
     }
@@ -64,7 +73,8 @@ class GameController extends Controller
     {
         $games = Game::all();
         $categories = Category::all();
-        return view('admin.game', compact("games", "categories"));
+        $platforms = Platform::all();
+        return view('admin.game', compact("games", "categories", "platforms"));
     }
 
     public function destroy(Game $game)

@@ -6,9 +6,14 @@ export default {
         "./resources/**/*.vue",
     ],
     theme: {
-        // colors: {
-        //     'gray: #232222'
-        // },
+        colors: {
+            navbar: '#232222',
+            orange: '#FF4D08',
+            white: '#FFFFFF',
+            red: '#DE2626',
+            phon: '#EEEEEE',
+            gray: '#00000080',
+        },
         extend: {},
     },
     plugins: [],

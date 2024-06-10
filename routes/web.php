@@ -3,9 +3,13 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DiscussionController;
+use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Discussion;
 use App\Models\Game;
 use Illuminate\Support\Facades\Route;
 
@@ -20,13 +24,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-// Route::get('/', function () {
-//     return view('main');
-// });
 
 
 Route::get('/', [PostController::class, 'posts'])->name('main');
@@ -34,12 +31,15 @@ Route::get('post/{post}', [PostController::class, 'show'])->name('post');
 Route::post('post/create', [PostController::class, 'store'])->name('post.store');
 Route::put('post/{post}/edit', [PostController::class, 'update'])->name('post.update');
 Route::post('post{post}', [PostController::class, 'delete'])->name('post.delete');
+// Route::get('post{post}', [PostController::class, 'last'])->name('post.last');
 Route::get('/publications', [PostController::class, 'publications'])->name('publications');
+Route::get('lastpost/{lastpost}', [PostController::class, 'last'])->name('lastpost');
 
+Route::get('discussion{discussion}', [DiscussionController::class, 'show'])->name('discussion');
 
 Route::get('games', [GameController::class, 'showGames'])->name('games');
 Route::post('game/create', [GameController::class, 'store'])->name('game.store');
-Route::get('game/{game}', [GameController::class, 'show'])->name('game.show');
+Route::get('game/{game}', [GameController::class, 'show'])->name('game');
 Route::post('game{game}', [GameController::class, 'destroy'])->name('game.destroy');
 Route::get('admin/games', [GameController::class, 'gameadmin'])->name('game.admin');
 Route::post('game/{game}/edit', [GameController::class, 'update'])->name('game.update');
@@ -57,9 +57,18 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/profile', [ProfileController::class, 'showProfile'])->name('profile');
 
+Route::group(['middleware' => 'is_admin'], function () {
+    Route::get('/admin', [AdminController::class, 'admin'])->name('admin');
+    Route::get('/admin/moderation', [AdminController::class, 'moderation'])->name('admin.moderation');
+    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::put('post/{post}/post-status', [AdminController::class, 'to_publish'])->name('post.publish');
+    Route::post('user{user}', [AdminController::class, 'userDestroy'])->name('users.destroy');
+});
 
-Route::get('/admin', [AdminController::class, 'admin'])->name('admin');
-Route::get('/admin/moderation', [AdminController::class, 'moderation'])->name('admin.moderation');
-Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
-Route::put('post/{post}/post-status', [AdminController::class, 'to_publish'])->name('post.publish');
-Route::post('user{user}', [AdminController::class, 'userDestroy'])->name('users.destroy');
+
+
+Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+
+
+Route::get('/forum', [DiscussionController::class, 'showForum'])->name('forum');
